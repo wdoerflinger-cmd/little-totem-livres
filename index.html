@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Little Totem · Les livres</title>
-<meta name="description" content="Albums, BD jeunesse et romans graphiques neufs à vendre par Little Totem. Choisissez vos livres et envoyez votre sélection.">
+<meta name="description" content="Albums, BD jeunesse et romans graphiques d'occasion à moitié prix, sélectionnés par Little Totem. Choisissez vos livres et envoyez votre sélection.">
 <meta name="theme-color" content="#24307f">
 <meta property="og:title" content="Little Totem · Les livres">
-<meta property="og:description" content="Albums, BD jeunesse et romans graphiques neufs, à petits stocks. Ouvrez des mondes.">
+<meta property="og:description" content="Albums, BD jeunesse et romans graphiques d'occasion, à moitié prix. Ouvrez des mondes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap">
@@ -28,12 +28,14 @@
   --encre:#1d2457;
   --gris:#636a8f;
   --trait:#e2e4f2;
+  --nuit-txt:#24307f;
+  --lagon-txt:#1c8f91;
   --font-titre:"Fredoka","Nunito",ui-rounded,system-ui,sans-serif;
   --font-texte:"Nunito",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root{
-  --fond:#12163a;--carte:#1b2152;--encre:#eef0ff;--gris:#a8aed6;--trait:#2c3470;--nuit:#1b2466;--nuit-2:#141b52;color-scheme:dark}}
+  --fond:#12163a;--carte:#1b2152;--encre:#eef0ff;--gris:#a8aed6;--trait:#2c3470;--nuit-txt:#a9b4ff;--lagon-txt:#5fd8d9;--nuit:#1b2466;--nuit-2:#141b52;color-scheme:dark}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
@@ -97,6 +99,10 @@ main{padding-block:24px 120px}
 .book .by{font-size:13px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-4px}
 .book .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
 .price{font:700 18px var(--font-titre);font-variant-numeric:tabular-nums}
+.prices{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+.prices s{font-size:13px;color:var(--gris);font-variant-numeric:tabular-nums}
+.promo{position:absolute;bottom:8px;right:8px;width:46px;height:46px;border-radius:50%;background:var(--corail);color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px var(--font-titre);transform:rotate(-12deg);box-shadow:0 4px 10px -4px rgba(0,0,0,.4)}
+.sold .promo{display:none}
 .add{border:2px solid var(--nuit);background:transparent;color:var(--nuit);border-radius:999px;font-weight:800;font-size:13px;padding:6px 12px;min-height:36px;white-space:nowrap}
 @media (prefers-color-scheme:dark){.add{border-color:var(--etoile);color:var(--etoile)}}
 .add[aria-pressed="true"]{background:var(--nuit);color:#fff;border-color:var(--nuit)}
@@ -137,6 +143,27 @@ dialog::backdrop{background:rgba(16,20,60,.6)}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:var(--gris)}
 label.f input,label.f textarea{font:16px var(--font-texte);color:var(--encre);background:var(--fond);border:2px solid var(--trait);border-radius:12px;padding:10px 12px}
 .note{font-size:13px;color:var(--gris);margin:0}
+.cform{display:flex;flex-direction:column;gap:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.two{grid-template-columns:1fr}}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.msg{margin:0;font-size:14px;font-weight:600;min-height:0}
+.msg:empty{display:none}
+.msg.err{color:var(--corail)}
+.sent{text-align:center;padding:24px 8px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sent h2{font-size:26px}.sent p{margin:0;max-width:44ch;color:var(--gris)}
+.sent-star{width:64px;height:64px;border-radius:50%;background:var(--nuit);color:var(--etoile);font-size:32px;display:flex;align-items:center;justify-content:center}
+.linkbtn{background:none;border:none;padding:0;color:#fff;font:800 15px var(--font-texte);text-decoration:underline;text-underline-offset:3px}
+.story{background:color-mix(in srgb,var(--lagon) 13%,var(--fond));border-top:1px solid var(--trait)}
+.story-in{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:40px;align-items:center;padding-block:56px}
+.story h2{font-size:clamp(28px,4vw,38px)}
+.squiggle{width:120px;height:14px;color:var(--corail);display:block;margin:4px 0 14px}
+.story p{margin:0 0 14px;max-width:62ch;font-size:17px}
+.facts{display:flex;flex-direction:column;gap:12px}
+.fact{background:var(--carte);border-radius:18px;padding:14px 18px;display:flex;align-items:baseline;gap:12px;box-shadow:0 8px 20px -16px rgba(20,26,80,.5)}
+.fact b{font:700 30px var(--font-titre);font-variant-numeric:tabular-nums;flex:none}
+.fact span{font-size:14px;color:var(--gris);font-weight:600}
+@media (max-width:760px){.story-in{grid-template-columns:1fr;gap:24px;padding-block:40px}}
 footer{background:var(--nuit-2);color:#c9cef5;font-size:14px}
 footer .wrap{padding-block:28px calc(88px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
 footer a{color:#fff}
@@ -162,8 +189,8 @@ footer a{color:#fff}
       <div class="word"><span>Little</span><span>Totem</span><small>ouvrez des mondes</small></div>
     </div>
     <div>
-      <h1>Des livres neufs pour <em>ouvrir des mondes</em></h1>
-      <p>Albums, BD jeunesse et romans graphiques sélectionnés par Little Totem, pour les 0-10 ans et un peu plus. Des histoires qui mettent K.O. les stéréotypes, en petites quantités.</p>
+      <h1>Des livres à petit prix pour <em>ouvrir des mondes</em></h1>
+      <p>Albums, BD jeunesse et romans graphiques d'occasion sélectionnés par Little Totem, pour les 0-10 ans et un peu plus. Des histoires qui mettent K.O. les stéréotypes, vendues jusqu'à moitié prix.</p>
       <ol class="steps">
         <li><b>1</b>Choisissez vos livres</li>
         <li><b>2</b>Envoyez votre sélection</li>
@@ -195,9 +222,30 @@ footer a{color:#fff}
   <div class="grid" id="grid" aria-busy="true"></div>
 </main>
 
+<!-- ============ MON HISTOIRE ============
+     Remplace les paragraphes ci-dessous par ton propre récit (garde les balises <p>…</p>).
+     Les chiffres à droite viennent de la campagne Ulule de 2022 : modifie-les ou supprime un bloc <div class="fact">…</div> si besoin. -->
+<section class="story" id="histoire" aria-labelledby="histoireTitre">
+  <div class="wrap story-in">
+    <div class="story-text">
+      <h2 id="histoireTitre">Mon histoire</h2>
+      <svg class="squiggle" viewBox="0 0 140 14" aria-hidden="true"><path d="M2 8c12-8 22 8 34 0s22 8 34 0 22 8 34 0 22 8 34 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+      <p>Little Totem est née à Toulouse avec une idée simple : une box de livres culottée et créative pour les 0-10 ans. Des albums choisis avec soin, accompagnés d'audios, de podcasts, de cartes à collectionner et d'activités, pour lire autrement et en famille.</p>
+      <p>Chaque sélection garde le même cap : des histoires qui mettent K.O. les stéréotypes, qui font la part belle à l'art et qui parlent du monde qui change.</p>
+      <p>Aujourd'hui, ces livres cherchent une nouvelle famille. Choisissez ceux qui vous plaisent, ils n'attendent que de nouveaux lecteurs pour ouvrir d'autres mondes.</p>
+      <button class="primary" data-contact style="margin-top:6px">Nous écrire</button>
+    </div>
+    <div class="facts">
+      <div class="fact"><b style="color:var(--corail)">2022</b><span>lancement sur Ulule</span></div>
+      <div class="fact"><b style="color:var(--nuit-txt)">198</b><span>contributeurs dès le départ</span></div>
+      <div class="fact"><b style="color:var(--lagon-txt)">307 %</b><span>de l'objectif de la collecte</span></div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
-    <div><strong style="color:#fff;font-family:var(--font-titre);font-size:18px">Little Totem</strong><br>Les prix affichés sont les prix éditeur (prix unique du livre en France).</div>
+    <div><strong style="color:#fff;font-family:var(--font-titre);font-size:18px">Little Totem</strong><br>Livres d'occasion. Le prix barré est le prix neuf de l'éditeur.</div>
     <div id="footContact"></div>
   </div>
 </footer>
@@ -206,15 +254,14 @@ footer a{color:#fff}
 
 <dialog id="dlgBook"><div class="sheet" id="bookBody"></div></dialog>
 <dialog id="dlgSel"><div class="sheet" id="selBody"></div></dialog>
+<dialog id="dlgContact"><div class="sheet" id="contactBody"></div></dialog>
 <div class="toast" id="toast" hidden></div>
 
 <script>
 /* ====== Réglages ====== */
 const CONFIG = {
   // Adresse de l'application Web Apps Script (la même que dans l'app de scan, se termine par /exec)
-  catalogueUrl: "https://script.google.com/macros/s/AKfycbx7PIGFhgI8u-I2sgNU4o_05fqYjZK4y9FeWhlOe8axt42VqXQqenctNwNYFKIgHg0Wcg/exec",
-  // Adresse e-mail qui reçoit les demandes (laisser vide pour masquer le bouton e-mail)
-  email: "wdoerflinger@gmail.com",
+  catalogueUrl: "",
   // Compte Instagram pour les messages
   instagram: "little.totem"
 };
@@ -225,6 +272,14 @@ const CONFIG = {
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const eur = (v) => v == null ? "" : Number(v).toLocaleString("fr-FR", {style:"currency", currency:"EUR"});
+const vente = (l) => l.prixVente ?? l.prix;
+// remise annoncée (celle du Sheet, ex. 50 %), le prix de vente étant arrondi en ,90
+const remise = (l) => (l.prix && l.prixVente != null && l.prixVente < l.prix) ? Math.round((l.remise > 0 ? l.remise : 1 - l.prixVente / l.prix) * 100) : 0;
+function prixHtml(l, big){
+  const v = vente(l); if(v == null) return `<span class="price">Prix sur demande</span>`;
+  const pc = remise(l), sz = big ? ' style="font-size:24px"' : "";
+  return `<span class="prices">${pc ? `<s aria-label="Prix neuf">${eur(l.prix)}</s>` : ""}<span class="price"${sz}>${eur(v)}</span></span>`;
+}
 const PALETTE = ["#24307f","#d81f86","#33c3c4","#f2644b","#7c8cf8","#8a52c9"];
 const params = new URLSearchParams(location.search);
 const url = params.get("catalogue") || CONFIG.catalogueUrl;
@@ -290,8 +345,8 @@ function liste(){
     (!q || [l.titre, l.auteurs, l.serie, l.editeur, l.isbn].join(" ").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)));
   const s = $("sort").value;
   r.sort((a,b) => s === "titre" ? a.titre.localeCompare(b.titre, "fr")
-    : s === "prix-asc" ? (a.prix ?? 1e9) - (b.prix ?? 1e9)
-    : s === "prix-desc" ? (b.prix ?? -1) - (a.prix ?? -1)
+    : s === "prix-asc" ? (vente(a) ?? 1e9) - (vente(b) ?? 1e9)
+    : s === "prix-desc" ? (vente(b) ?? -1) - (vente(a) ?? -1)
     : b.t - a.t);
   if(!seulDispo) r.sort((a,b) => (b.dispo > 0) - (a.dispo > 0));
   return r;
@@ -306,10 +361,10 @@ function afficher(){
   grid.innerHTML = r.map(l => {
     const inSel = selection[l.isbn] > 0;
     return `<article class="book${l.dispo <= 0 ? " sold" : ""}">
-      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}</button>
+      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}</button>
       <h3>${esc(l.titre)}</h3>
       <div class="by">${esc(l.auteurs || l.editeur)}</div>
-      <div class="foot"><span class="price">${eur(l.prix) || "Prix sur demande"}</span>
+      <div class="foot">${prixHtml(l)}
         <button class="add" data-add="${l.isbn}" aria-pressed="${inSel}" ${l.dispo <= 0 ? "disabled" : ""}>${inSel ? "Choisi ✓" : "+ Choisir"}</button></div>
     </article>`;
   }).join("");
@@ -335,7 +390,7 @@ function ouvrir(isbn){
       <div>
         <h2>${esc(l.titre)}</h2>
         <dl class="meta">${rows.map(([k,v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
-        <p style="margin:16px 0 4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="price" style="font-size:24px">${eur(l.prix) || "Prix sur demande"}</span>
+        <p style="margin:16px 0 4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">${prixHtml(l, true)}${remise(l) ? `<span class="badge" style="position:static;background:var(--corail);color:#fff">−${remise(l)} % sur le prix neuf</span>` : ""}
           <span class="badge ${l.dispo<=0?"b-sold":l.dispo===1?"b-last":"b-ok"}" style="position:static">${l.dispo<=0?"Épuisé":l.dispo===1?"Dernier exemplaire":l.dispo+" disponibles"}</span></p>
       </div>
     </div>
@@ -350,7 +405,7 @@ function loadSel(){ try { return JSON.parse(localStorage.getItem("lt-selection")
 function saveSel(){ try { localStorage.setItem("lt-selection", JSON.stringify(selection)); } catch(_){} majFab(); }
 function items(){ return Object.entries(selection).map(([isbn, n]) => ({ l: livres.find(x => x.isbn === isbn), n })).filter(x => x.l && x.n > 0); }
 function majFab(){
-  const it = items(), n = it.reduce((s,x) => s + x.n, 0), tot = it.reduce((s,x) => s + (x.l.prix || 0) * x.n, 0);
+  const it = items(), n = it.reduce((s,x) => s + x.n, 0), tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
   $("fab").hidden = !n; $("fabN").textContent = n + " · " + eur(tot);
 }
 function basculer(isbn){
@@ -360,42 +415,85 @@ function basculer(isbn){
   saveSel(); afficher();
 }
 function texteSelection(){
-  const it = items(), tot = it.reduce((s,x) => s + (x.l.prix || 0) * x.n, 0);
-  const nom = ($("selNom") || {}).value || "", msg = ($("selMsg") || {}).value || "";
+  const it = items(), tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
   return `Bonjour Little Totem,\n\nJe souhaite réserver ces livres :\n` +
-    it.map(x => `- ${x.l.titre}${x.l.auteurs ? " (" + x.l.auteurs + ")" : ""} × ${x.n} : ${eur((x.l.prix || 0) * x.n)} [ISBN ${x.l.isbn}]`).join("\n") +
-    `\n\nTotal : ${eur(tot)}` + (msg.trim() ? `\n\n${msg.trim()}` : "") + (nom.trim() ? `\n\n${nom.trim()}` : "") + "\n";
+    it.map(x => `- ${x.l.titre} × ${x.n} : ${eur((vente(x.l) || 0) * x.n)} [ISBN ${x.l.isbn}]`).join("\n") + `\n\nTotal : ${eur(tot)}\n`;
+}
+/* Formulaire commun : réservation (avec sélection) ou simple message. L'envoi passe par le script Google, qui transmet l'e-mail. */
+function formulaire(avecSelection){
+  return `<form class="cform" data-sel="${avecSelection ? 1 : 0}" novalidate>
+    <div class="two">
+      <label class="f">Prénom *<input name="nom" autocomplete="given-name" required maxlength="80"></label>
+      <label class="f">E-mail *<input name="email" type="email" autocomplete="email" required maxlength="120"></label>
+    </div>
+    <label class="f">Téléphone (facultatif)<input name="tel" type="tel" autocomplete="tel" maxlength="40"></label>
+    <label class="f">${avecSelection ? "Un mot pour nous (ville, remise en main propre ou envoi…)" : "Votre message *"}<textarea name="message" rows="${avecSelection ? 2 : 5}" maxlength="3000" ${avecSelection ? "" : "required"}></textarea></label>
+    <label class="hp" aria-hidden="true">Site web<input name="site_web" tabindex="-1" autocomplete="off"></label>
+    <p class="msg" role="status"></p>
+    <div class="actions">
+      <button type="submit" class="primary">${avecSelection ? "Envoyer ma demande" : "Envoyer le message"}</button>
+      ${CONFIG.instagram ? `<a class="secondary" data-ig href="https://ig.me/m/${esc(CONFIG.instagram)}" target="_blank" rel="noopener">Plutôt sur Instagram</a>` : ""}
+    </div>
+  </form>`;
 }
 function ouvrirSelection(){
   const it = items(); if(!it.length) return;
-  const tot = it.reduce((s,x) => s + (x.l.prix || 0) * x.n, 0);
-  const sujet = encodeURIComponent("Réservation de livres Little Totem");
+  const tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
+  const neuf = it.reduce((s,x) => s + (x.l.prix || vente(x.l) || 0) * x.n, 0);
+  const keep = $("selBody").querySelector("form") ? Object.fromEntries(new FormData($("selBody").querySelector("form"))) : null;
   $("selBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
     <h2 style="font-size:24px">Ma sélection</h2>
     <ul class="sel">${it.map(({l, n}) => `<li>
       ${l.img || l.img2 ? `<img src="${esc(l.img || l.img2)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : `<div class="mini"></div>`}
-      <div class="t">${esc(l.titre)}<div style="font-weight:400;font-size:13px;color:var(--gris)">${eur(l.prix)} · ${l.dispo} dispo</div></div>
+      <div class="t">${esc(l.titre)}<div style="font-weight:400;font-size:13px;color:var(--gris)">${remise(l) ? `<s>${eur(l.prix)}</s> ` : ""}${eur(vente(l))} · ${l.dispo} dispo</div></div>
       <div class="qty"><button data-qty="${l.isbn}" data-d="-1" aria-label="Un de moins">−</button><span>${n}</span>
         <button data-qty="${l.isbn}" data-d="1" aria-label="Un de plus" ${n >= l.dispo ? "disabled" : ""}>+</button></div></li>`).join("")}</ul>
-    <div class="total"><span>Total</span><span>${eur(tot)}</span></div>
-    <label class="f">Votre prénom<input id="selNom" autocomplete="given-name"></label>
-    <label class="f">Un message (ville, remise en main propre ou envoi…)<textarea id="selMsg" rows="2"></textarea></label>
-    <div class="actions">
-      ${CONFIG.email ? `<a class="primary" style="text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center" id="mailLink" href="mailto:${esc(CONFIG.email)}?subject=${sujet}">Envoyer par e-mail</a>` : ""}
-      ${CONFIG.instagram ? `<a class="${CONFIG.email ? "secondary" : "primary"}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center" id="igLink" href="https://ig.me/m/${esc(CONFIG.instagram)}" target="_blank" rel="noopener">Écrire sur Instagram</a>` : ""}
-      <button class="secondary" id="copySel">Copier ma sélection</button>
-    </div>
-    <p class="note">Rien n'est payé en ligne. On vous répond pour confirmer la disponibilité et organiser la remise.${CONFIG.instagram ? " Sur Instagram, votre sélection est copiée : collez-la dans le message." : ""}</p>`;
+    <div class="total"><span>Total</span><span>${neuf > tot ? `<s style="font-size:14px;color:var(--gris);font-weight:600;margin-right:8px">${eur(neuf)}</s>` : ""}${eur(tot)}</span></div>
+    <h3 style="font-size:18px;margin-top:4px">Réserver ces livres</h3>
+    ${formulaire(true)}
+    <p class="note">Rien n'est payé en ligne. On vous répond par e-mail pour confirmer la disponibilité et organiser la remise.</p>`;
+  if(keep){ const f = $("selBody").querySelector("form"); Object.entries(keep).forEach(([k,v]) => { if(f.elements[k]) f.elements[k].value = v; }); }
   if(!$("dlgSel").open) $("dlgSel").showModal();
 }
+function ouvrirContact(){
+  $("contactBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
+    <h2 style="font-size:24px">Nous écrire</h2>
+    <p class="note" style="font-size:15px">Une question sur un livre, une envie particulière ? On vous répond par e-mail.</p>
+    ${formulaire(false)}`;
+  $("dlgContact").showModal();
+}
+async function envoyer(form){
+  const msg = form.querySelector(".msg"), btn = form.querySelector("[type=submit]");
+  const d = Object.fromEntries(new FormData(form)), avecSel = form.dataset.sel === "1";
+  msg.className = "msg";
+  if(!d.nom.trim()){ msg.textContent = "Indiquez votre prénom."; msg.classList.add("err"); form.elements.nom.focus(); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(d.email.trim())){ msg.textContent = "Indiquez une adresse e-mail valide pour qu'on puisse vous répondre."; msg.classList.add("err"); form.elements.email.focus(); return; }
+  if(!avecSel && !d.message.trim()){ msg.textContent = "Écrivez votre message."; msg.classList.add("err"); form.elements.message.focus(); return; }
+  if(!url){ msg.textContent = "L'envoi n'est pas encore activé sur ce site. Écrivez-nous sur Instagram."; msg.classList.add("err"); return; }
+  btn.disabled = true; btn.textContent = "Envoi…"; msg.textContent = "";
+  try {
+    const res = await fetch(url, { method:"POST", body: JSON.stringify({ action:"contact", ...d,
+      selection: avecSel ? items().map(x => ({ isbn: x.l.isbn, n: x.n })) : [] }) });
+    const j = await res.json(); if(!j.ok) throw new Error(j.error || "");
+    const box = form.closest(".sheet");
+    box.innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
+      <div class="sent"><div class="sent-star" aria-hidden="true">★</div><h2>Merci ${esc(d.nom.trim())} !</h2>
+      <p>${avecSel ? "Votre demande de réservation est bien partie." : "Votre message est bien parti."} On vous répond très vite à l'adresse ${esc(d.email.trim())}.</p>
+      <button class="secondary" data-close>Retour aux livres</button></div>`;
+    if(avecSel){ selection = {}; saveSel(); afficher(); }
+  } catch(e){
+    msg.textContent = e.message || "L'envoi n'a pas fonctionné. Vérifiez votre connexion et réessayez, ou écrivez-nous sur Instagram.";
+    msg.classList.add("err"); btn.disabled = false; btn.textContent = avecSel ? "Envoyer ma demande" : "Envoyer le message";
+  }
+}
 async function copier(){
-  try { await navigator.clipboard.writeText(texteSelection()); toast("Sélection copiée"); return true; }
-  catch(_){ toast("Copie impossible sur cet appareil"); return false; }
+  try { await navigator.clipboard.writeText(texteSelection()); toast("Sélection copiée : collez-la dans le message"); return true; }
+  catch(_){ return false; }
 }
 
 /* ---------- Événements ---------- */
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-open],[data-add],[data-close],[data-qty],#copySel,#mailLink,#igLink");
+  const t = e.target.closest("[data-open],[data-add],[data-close],[data-qty],[data-ig],[data-contact]");
   if(!t) return;
   if(t.dataset.open) ouvrir(t.dataset.open);
   else if(t.dataset.add){ basculer(t.dataset.add); if(t.dataset.stay) ouvrir(t.dataset.add); }
@@ -404,10 +502,10 @@ document.addEventListener("click", (e) => {
     const n = Math.min(l.dispo, Math.max(0, (selection[l.isbn] || 0) + (+t.dataset.d)));
     if(n) selection[l.isbn] = n; else delete selection[l.isbn];
     saveSel(); afficher(); if(items().length) ouvrirSelection(); else $("dlgSel").close(); }
-  else if(t.id === "copySel") copier();
-  else if(t.id === "mailLink") t.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Réservation de livres Little Totem")}&body=${encodeURIComponent(texteSelection())}`;
-  else if(t.id === "igLink") copier();
+  else if(t.hasAttribute("data-ig")){ if(t.closest("form").dataset.sel === "1") copier(); }
+  else if(t.hasAttribute("data-contact")) ouvrirContact();
 });
+document.addEventListener("submit", (e) => { const f = e.target.closest(".cform"); if(!f) return; e.preventDefault(); envoyer(f); });
 document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", (e) => { if(e.target === d) d.close(); }));
 $("fab").onclick = ouvrirSelection;
 ["q","sort","editeur","dispo"].forEach(id => $(id).addEventListener("input", afficher));
@@ -415,8 +513,8 @@ $("fab").onclick = ouvrirSelection;
 let toastT;
 function toast(m){ const t = $("toast"); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
 
-$("footContact").innerHTML = [CONFIG.instagram && `Instagram : <a href="https://www.instagram.com/${esc(CONFIG.instagram)}/" target="_blank" rel="noopener">@${esc(CONFIG.instagram)}</a>`,
-  CONFIG.email && `E-mail : <span style="color:#fff;user-select:all">${esc(CONFIG.email)}</span>`].filter(Boolean).join("<br>");
+$("footContact").innerHTML = `<button class="linkbtn" data-contact>Nous écrire</button>` +
+  (CONFIG.instagram ? `<br>Instagram : <a href="https://www.instagram.com/${esc(CONFIG.instagram)}/" target="_blank" rel="noopener">@${esc(CONFIG.instagram)}</a>` : "");
 
 charger().then(majFab);
 })();
