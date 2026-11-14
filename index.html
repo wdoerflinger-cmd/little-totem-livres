@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Little Totem · Les livres</title>
-<meta name="description" content="Albums, BD jeunesse et romans graphiques d'occasion à moitié prix, sélectionnés par Little Totem. Choisissez vos livres et envoyez votre sélection.">
+<title>Little Totem · Livres et jouets</title>
+<meta name="description" content="Albums, BD jeunesse, romans graphiques et jouets d'occasion à moitié prix, sélectionnés par Little Totem. Faites votre sélection et envoyez-la.">
 <meta name="theme-color" content="#24307f">
-<meta property="og:title" content="Little Totem · Les livres">
-<meta property="og:description" content="Albums, BD jeunesse et romans graphiques d'occasion, à moitié prix. Ouvrez des mondes.">
+<meta property="og:title" content="Little Totem · Livres et jouets">
+<meta property="og:description" content="Albums, BD jeunesse, romans graphiques et jouets d'occasion, à moitié prix. Ouvrez des mondes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap">
@@ -79,6 +79,13 @@ select{font:600 14px var(--font-texte);color:var(--encre);background:var(--carte
 .toggle input{width:18px;height:18px;accent-color:var(--nuit)}
 .tools select{flex:0 1 auto}
 @media (max-width:640px){.tools{position:static}.tools select{flex:1 1 40%;min-width:0}}
+.types{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.types button{border:2px solid var(--trait);background:var(--carte);color:var(--encre);border-radius:999px;font:700 14px var(--font-texte);padding:6px 14px;min-height:38px}
+.types button span{color:var(--gris);font-weight:600;margin-left:4px}
+.types button[aria-pressed="true"]{background:var(--nuit);border-color:var(--nuit);color:#fff}
+.types button[aria-pressed="true"] span{color:#c9cef5}
+@media (prefers-color-scheme:dark){.types button[aria-pressed="true"]{background:var(--etoile);border-color:var(--etoile);color:var(--nuit)}.types button[aria-pressed="true"] span{color:var(--nuit)}}
+.lang{position:absolute;top:8px;right:8px;font:700 11px var(--font-texte);letter-spacing:.06em;border-radius:6px;padding:3px 7px;background:var(--carte);color:var(--encre);box-shadow:0 2px 6px -2px rgba(0,0,0,.35)}
 .count{width:100%;font-size:14px;color:var(--gris);margin:0}
 .count b{color:var(--encre)}
 
@@ -189,12 +196,12 @@ footer a{color:#fff}
       <div class="word"><span>Little</span><span>Totem</span><small>ouvrez des mondes</small></div>
     </div>
     <div>
-      <h1>Des livres à petit prix pour <em>ouvrir des mondes</em></h1>
-      <p>Albums, BD jeunesse et romans graphiques d'occasion sélectionnés par Little Totem, pour les 0-10 ans et un peu plus. Des histoires qui mettent K.O. les stéréotypes, vendues jusqu'à moitié prix.</p>
+      <h1>Des livres et des jouets à petit prix pour <em>ouvrir des mondes</em></h1>
+      <p>Albums, BD jeunesse, romans graphiques et jouets d'occasion sélectionnés par Little Totem, pour les 0-10 ans et un peu plus. Des histoires et des jeux qui mettent K.O. les stéréotypes, vendus jusqu'à moitié prix.</p>
       <ol class="steps">
-        <li><b>1</b>Choisissez vos livres</li>
+        <li><b>1</b>Choisissez vos articles</li>
         <li><b>2</b>Envoyez votre sélection</li>
-        <li><b>3</b>On vous répond pour la remise</li>
+        <li><b>3</b>On vous contacte pour la livraison</li>
       </ol>
     </div>
   </div>
@@ -204,7 +211,7 @@ footer a{color:#fff}
   <div class="wrap">
     <label class="search"><span class="visually-hidden" hidden>Rechercher</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Un titre, un auteur, une série…" aria-label="Rechercher un livre" autocomplete="off">
+      <input id="q" type="search" placeholder="Un titre, un auteur, une marque…" aria-label="Rechercher" autocomplete="off">
     </label>
     <select id="sort" aria-label="Trier">
       <option value="new">Derniers arrivés</option>
@@ -212,8 +219,10 @@ footer a{color:#fff}
       <option value="prix-asc">Prix croissant</option>
       <option value="prix-desc">Prix décroissant</option>
     </select>
-    <select id="editeur" aria-label="Éditeur"><option value="">Tous les éditeurs</option></select>
+    <select id="langue" aria-label="Langue" hidden><option value="">Toutes les langues</option></select>
+    <select id="editeur" aria-label="Éditeur ou marque"><option value="">Éditeurs et marques</option></select>
     <label class="toggle"><input type="checkbox" id="dispo" checked> Disponibles seulement</label>
+    <div class="types" id="types" role="group" aria-label="Type d'article" hidden></div>
     <p class="count" id="count" aria-live="polite">Chargement du catalogue…</p>
   </div>
 </div>
@@ -245,7 +254,7 @@ footer a{color:#fff}
 
 <footer>
   <div class="wrap">
-    <div><strong style="color:#fff;font-family:var(--font-titre);font-size:18px">Little Totem</strong><br>Livres d'occasion. Le prix barré est le prix neuf de l'éditeur.</div>
+    <div><strong style="color:#fff;font-family:var(--font-titre);font-size:18px">Little Totem</strong><br>Livres et jouets d'occasion. Le prix barré est le prix neuf.</div>
     <div id="footContact"></div>
   </div>
 </footer>
@@ -257,14 +266,18 @@ footer a{color:#fff}
 <dialog id="dlgContact"><div class="sheet" id="contactBody"></div></dialog>
 <div class="toast" id="toast" hidden></div>
 
+<script src="config.js"></script>
 <script>
-/* ====== Réglages ====== */
+/* ====== Réglages ======
+   Ils se règlent de préférence dans le fichier config.js du même dépôt : il n'est jamais remplacé par les mises à jour. */
 const CONFIG = {
   // Adresse de l'application Web Apps Script (la même que dans l'app de scan, se termine par /exec)
-  catalogueUrl: "https://script.google.com/macros/s/AKfycbx7PIGFhgI8u-I2sgNU4o_05fqYjZK4y9FeWhlOe8axt42VqXQqenctNwNYFKIgHg0Wcg/exec",
+  catalogueUrl: "",
   // Compte Instagram pour les messages
   instagram: "little.totem"
 };
+Object.assign(CONFIG, window.LITTLE_TOTEM_CONFIG || {});
+if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(CONFIG.catalogueUrl || "")) CONFIG.catalogueUrl = "";   // adresse absente ou pas encore collée
 /* ====================== */
 
 (() => {
@@ -280,6 +293,12 @@ function prixHtml(l, big){
   const pc = remise(l), sz = big ? ' style="font-size:24px"' : "";
   return `<span class="prices">${pc ? `<s aria-label="Prix neuf">${eur(l.prix)}</s>` : ""}<span class="price"${sz}>${eur(v)}</span></span>`;
 }
+const TYPE_PLURIEL = { Livre: "Livres", Jouet: "Jouets", Jeu: "Jeux", Autre: "Autres" };
+const typeOf = (l) => l.type || (/^97[89]/.test(l.isbn) ? "Livre" : "Jouet");
+const estLivre = (l) => typeOf(l) === "Livre";
+const LANG_CODE = { Anglais:"EN", Allemand:"DE", Espagnol:"ES", Italien:"IT", "Néerlandais":"NL", Portugais:"PT", Japonais:"JA", Chinois:"ZH", "Coréen":"KO", Russe:"RU", Arabe:"AR", Suédois:"SV", Danois:"DA", "Norvégien":"NO", Polonais:"PL", Breton:"BR", Catalan:"CA", Basque:"EU", Occitan:"OC" };
+const langCode = (n) => LANG_CODE[n] || String(n || "").slice(0, 2).toUpperCase();
+let typeChoisi = "";
 const PALETTE = ["#24307f","#d81f86","#33c3c4","#f2644b","#7c8cf8","#8a52c9"];
 const params = new URLSearchParams(location.search);
 const url = params.get("catalogue") || CONFIG.catalogueUrl;
@@ -311,16 +330,29 @@ async function charger(){
     const res = await fetch(url + (url.includes("?") ? "&" : "?") + "action=catalogue");
     const j = await res.json(); if(!j.ok) throw new Error();
     livres = j.livres.map(l => ({...l, t: Date.parse(l.ajoute) || 0}));
-    remplirEditeurs(); afficher();
+    remplirFiltres(); afficher();
   } catch(e){
     etat("Le catalogue ne répond pas", "Réessayez dans un instant. Si le problème continue, écrivez-nous sur Instagram.");
   }
 }
-function remplirEditeurs(){
+function remplirFiltres(){
+  const enStock = livres.filter(l => l.dispo > 0);
+  // éditeurs et marques
   const counts = {}; livres.forEach(l => { const e = (l.editeur || "").split(",")[0].trim(); if(e) counts[e] = (counts[e] || 0) + 1; });
   const list = Object.keys(counts).sort((a,b) => a.localeCompare(b, "fr"));
   $("editeur").hidden = list.length < 2;
-  $("editeur").innerHTML = `<option value="">Tous les éditeurs</option>` + list.map(e => `<option>${esc(e)}</option>`).join("");
+  $("editeur").innerHTML = `<option value="">Éditeurs et marques</option>` + list.map(e => `<option>${esc(e)}</option>`).join("");
+  // langues (le français d'abord)
+  const langs = {}; livres.forEach(l => { if(l.langue) langs[l.langue] = (langs[l.langue] || 0) + (l.dispo > 0 ? 1 : 0); });
+  const ll = Object.keys(langs).sort((a,b) => (b === "Français") - (a === "Français") || a.localeCompare(b, "fr"));
+  $("langue").hidden = ll.length < 2;
+  $("langue").innerHTML = `<option value="">Toutes les langues</option>` + ll.map(x => `<option value="${esc(x)}">${esc(x)} (${langs[x]})</option>`).join("");
+  // types (livres, jouets…)
+  const types = {}; enStock.forEach(l => { const t = typeOf(l); types[t] = (types[t] || 0) + 1; });
+  const tl = ["Livre","Jouet","Jeu","Autre"].filter(t => types[t]);
+  $("types").hidden = tl.length < 2;
+  $("types").innerHTML = [["", "Tout", enStock.length], ...tl.map(t => [t, TYPE_PLURIEL[t], types[t]])]
+    .map(([v, lbl, n]) => `<button type="button" data-type="${v}" aria-pressed="${v === typeChoisi}">${lbl}<span>${n}</span></button>`).join("");
 }
 
 /* ---------- Affichage ---------- */
@@ -330,7 +362,7 @@ function coverHtml(l, cls = "cover"){
   const src = l.img || l.img2;
   if(!src) return ph;
   const fallback = l.img && l.img2 ? `if(!this.dataset.f){this.dataset.f=1;this.src='${esc(l.img2)}';return;}` : "";
-  return `<img class="${cls}" src="${esc(src)}" alt="Couverture de ${esc(l.titre)}" loading="lazy" referrerpolicy="no-referrer"
+  return `<img class="${cls}" src="${esc(src)}" alt="${estLivre(l) ? "Couverture" : "Photo"} de ${esc(l.titre)}" loading="lazy" referrerpolicy="no-referrer"
     onerror="${fallback}this.outerHTML=this.dataset.ph" data-ph="${esc(ph)}">`;
 }
 function badge(l){
@@ -340,9 +372,10 @@ function badge(l){
 }
 function liste(){
   const q = $("q").value.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  const ed = $("editeur").value, seulDispo = $("dispo").checked;
+  const ed = $("editeur").value, lg = $("langue").value, seulDispo = $("dispo").checked;
   let r = livres.filter(l => (!seulDispo || l.dispo > 0) && (!ed || (l.editeur || "").startsWith(ed)) &&
-    (!q || [l.titre, l.auteurs, l.serie, l.editeur, l.isbn].join(" ").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)));
+    (!lg || l.langue === lg) && (!typeChoisi || typeOf(l) === typeChoisi) &&
+    (!q || [l.titre, l.auteurs, l.serie, l.editeur, l.isbn, l.langue, l.age, typeOf(l)].join(" ").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)));
   const s = $("sort").value;
   r.sort((a,b) => s === "titre" ? a.titre.localeCompare(b.titre, "fr")
     : s === "prix-asc" ? (vente(a) ?? 1e9) - (vente(b) ?? 1e9)
@@ -354,16 +387,16 @@ function liste(){
 function afficher(){
   const r = liste(); const grid = $("grid"); grid.setAttribute("aria-busy", "false");
   const titres = livres.filter(l => l.dispo > 0).length, ex = livres.reduce((s,l) => s + Math.max(0, l.dispo), 0);
-  $("count").innerHTML = `<b>${titres}</b> titre${titres>1?"s":""} disponible${titres>1?"s":""}, <b>${ex}</b> exemplaire${ex>1?"s":""} en stock` +
+  $("count").innerHTML = `<b>${titres}</b> article${titres>1?"s":""} disponible${titres>1?"s":""}, <b>${ex}</b> exemplaire${ex>1?"s":""} en stock` +
     (r.length !== (livres.filter(l => !$("dispo").checked || l.dispo > 0).length) ? ` · ${r.length} résultat${r.length>1?"s":""}` : "");
-  if(!livres.length){ etat("Rien en rayon pour l'instant", "Les premiers livres arrivent bientôt."); return; }
-  if(!r.length){ grid.innerHTML = `<div class="state" style="grid-column:1/-1"><h2>Aucun livre trouvé</h2>Essayez un autre mot, ou affichez aussi les livres épuisés.</div>`; return; }
+  if(!livres.length){ etat("Rien en rayon pour l'instant", "Les premiers articles arrivent bientôt."); return; }
+  if(!r.length){ grid.innerHTML = `<div class="state" style="grid-column:1/-1"><h2>Rien trouvé</h2>Essayez un autre mot ou un autre filtre, ou affichez aussi les articles épuisés.</div>`; return; }
   grid.innerHTML = r.map(l => {
     const inSel = selection[l.isbn] > 0;
     return `<article class="book${l.dispo <= 0 ? " sold" : ""}">
-      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}</button>
+      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}${l.langue && l.langue !== "Français" ? `<span class="lang" title="${esc(l.langue)}" aria-label="En ${esc(l.langue.toLowerCase())}">${esc(langCode(l.langue))}</span>` : ""}</button>
       <h3>${esc(l.titre)}</h3>
-      <div class="by">${esc(l.auteurs || l.editeur)}</div>
+      <div class="by">${esc([estLivre(l) ? (l.auteurs || l.editeur) : l.editeur, l.age].filter(Boolean).join(" · "))}</div>
       <div class="foot">${prixHtml(l)}
         <button class="add" data-add="${l.isbn}" aria-pressed="${inSel}" ${l.dispo <= 0 ? "disabled" : ""}>${inSel ? "Choisi ✓" : "+ Choisir"}</button></div>
     </article>`;
@@ -382,8 +415,10 @@ function etat(titre, texte){
 function ouvrir(isbn){
   const l = livres.find(x => x.isbn === isbn); if(!l) return;
   const inSel = selection[l.isbn] > 0;
-  const rows = [["Auteurs", l.auteurs], ["Série", [l.serie, l.tome && "tome " + l.tome].filter(Boolean).join(", ")], ["Éditeur", [l.editeur, l.annee].filter(Boolean).join(", ")],
-    ["Langue", l.langue], ["État", l.etat], ["ISBN", l.isbn]].filter(r => r[1]);
+  const rows = (estLivre(l)
+    ? [["Auteurs", l.auteurs], ["Série", [l.serie, l.tome && "tome " + l.tome].filter(Boolean).join(", ")], ["Éditeur", [l.editeur, l.annee].filter(Boolean).join(", ")],
+       ["Langue", l.langue], ["Âge", l.age], ["État", l.etat], ["ISBN", l.isbn]]
+    : [["Type", typeOf(l)], ["Marque", l.editeur], ["Âge", l.age], ["Langue", l.langue], ["État", l.etat], ["Code EAN", l.isbn]]).filter(r => r[1]);
   $("bookBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
     <div class="detail">
       <div>${coverHtml(l)}</div>
@@ -394,7 +429,7 @@ function ouvrir(isbn){
           <span class="badge ${l.dispo<=0?"b-sold":l.dispo===1?"b-last":"b-ok"}" style="position:static">${l.dispo<=0?"Épuisé":l.dispo===1?"Dernier exemplaire":l.dispo+" disponibles"}</span></p>
       </div>
     </div>
-    ${l.resume ? `<div><h3 style="font-size:18px;margin-bottom:6px">L'histoire</h3><p class="resume">${esc(l.resume)}</p></div>` : ""}
+    ${l.resume ? `<div><h3 style="font-size:18px;margin-bottom:6px">${estLivre(l) ? "L'histoire" : "Description"}</h3><p class="resume">${esc(l.resume)}</p></div>` : ""}
     <div class="actions">${l.dispo > 0 ? `<button class="primary" data-add="${l.isbn}" data-stay>${inSel ? "Retirer de ma sélection" : "Ajouter à ma sélection"}</button>` : ""}
       <button class="secondary" data-close>Continuer à regarder</button></div>`;
   $("dlgBook").showModal(); $("dlgBook").scrollTop = 0;
@@ -416,7 +451,7 @@ function basculer(isbn){
 }
 function texteSelection(){
   const it = items(), tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
-  return `Bonjour Little Totem,\n\nJe souhaite réserver ces livres :\n` +
+  return `Bonjour Little Totem,\n\nJe souhaite réserver ces articles :\n` +
     it.map(x => `- ${x.l.titre} × ${x.n} : ${eur((vente(x.l) || 0) * x.n)} [ISBN ${x.l.isbn}]`).join("\n") + `\n\nTotal : ${eur(tot)}\n`;
 }
 /* Formulaire commun : réservation (avec sélection) ou simple message. L'envoi passe par le script Google, qui transmet l'e-mail. */
@@ -449,9 +484,9 @@ function ouvrirSelection(){
       <div class="qty"><button data-qty="${l.isbn}" data-d="-1" aria-label="Un de moins">−</button><span>${n}</span>
         <button data-qty="${l.isbn}" data-d="1" aria-label="Un de plus" ${n >= l.dispo ? "disabled" : ""}>+</button></div></li>`).join("")}</ul>
     <div class="total"><span>Total</span><span>${neuf > tot ? `<s style="font-size:14px;color:var(--gris);font-weight:600;margin-right:8px">${eur(neuf)}</s>` : ""}${eur(tot)}</span></div>
-    <h3 style="font-size:18px;margin-top:4px">Réserver ces livres</h3>
+    <h3 style="font-size:18px;margin-top:4px">Réserver ma sélection</h3>
     ${formulaire(true)}
-    <p class="note">Rien n'est payé en ligne. On vous répond par e-mail pour confirmer la disponibilité et organiser la remise.</p>`;
+    <p class="note">Rien n'est payé en ligne. On vous répond par e-mail pour confirmer la disponibilité et organiser la livraison.</p>`;
   if(keep){ const f = $("selBody").querySelector("form"); Object.entries(keep).forEach(([k,v]) => { if(f.elements[k]) f.elements[k].value = v; }); }
   if(!$("dlgSel").open) $("dlgSel").showModal();
 }
@@ -508,7 +543,9 @@ document.addEventListener("click", (e) => {
 document.addEventListener("submit", (e) => { const f = e.target.closest(".cform"); if(!f) return; e.preventDefault(); envoyer(f); });
 document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", (e) => { if(e.target === d) d.close(); }));
 $("fab").onclick = ouvrirSelection;
-["q","sort","editeur","dispo"].forEach(id => $(id).addEventListener("input", afficher));
+["q","sort","editeur","langue","dispo"].forEach(id => $(id).addEventListener("input", afficher));
+$("types").addEventListener("click", (e) => { const b = e.target.closest("[data-type]"); if(!b) return;
+  typeChoisi = b.dataset.type; $("types").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); afficher(); });
 
 let toastT;
 function toast(m){ const t = $("toast"); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
