@@ -136,10 +136,21 @@ dialog::backdrop{background:rgba(16,20,60,.6)}
 .secondary{border:2px solid var(--trait);background:var(--carte);color:var(--encre);border-radius:999px;font:800 15px var(--font-texte);padding:10px 18px;min-height:46px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .actions{display:flex;flex-wrap:wrap;gap:10px}
 .actions>*{flex:1 1 180px}
-.fab{position:fixed;z-index:6;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  display:flex;align-items:center;gap:12px;border:none;background:var(--nuit);color:#fff;border-radius:999px;padding:10px 12px 10px 20px;
-  font:700 15px var(--font-texte);box-shadow:0 12px 30px -10px rgba(16,20,60,.6);max-width:calc(100vw - 32px)}
-.fab .n{background:var(--etoile);color:var(--nuit);border-radius:999px;padding:4px 12px;font-family:var(--font-titre)}
+.fab{position:fixed;z-index:6;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:14px;border:3px solid #fff;background:var(--corail);color:#fff;border-radius:999px;padding:10px 12px 10px 16px;
+  font:700 18px var(--font-titre);min-height:64px;box-shadow:0 14px 34px -10px rgba(16,20,60,.65),0 0 0 6px rgba(242,100,75,.18);max-width:calc(100vw - 32px);cursor:pointer}
+.fab:hover{filter:brightness(1.06)}
+.fab .ico{position:relative;display:flex}
+.fab .ico b{position:absolute;top:-8px;right:-10px;min-width:22px;height:22px;border-radius:999px;background:var(--etoile);color:var(--nuit);
+  font:700 13px/22px var(--font-titre);text-align:center;padding:0 5px}
+.fab .lbl{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;text-align:left}
+.fab .lbl small{font:600 13px var(--font-texte);opacity:.92}
+.fab .go{background:#fff;color:var(--corail);border-radius:999px;padding:8px 14px;font:800 15px var(--font-texte);white-space:nowrap}
+.fab.bump{animation:bump .45s ease}
+@keyframes bump{30%{transform:scale(1.08)}60%{transform:scale(.97)}}
+@media (max-width:600px){.fab{left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:space-between;max-width:none}}
+.ship{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:15px;padding-top:6px;font-variant-numeric:tabular-nums}
+.ship .muted{color:var(--gris);font-size:13px;grid-column:1/-1;margin-top:-2px}
 .sel{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .sel li{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--trait)}
 .sel img,.sel .mini{width:48px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;background:var(--trait)}
@@ -172,9 +183,9 @@ label.f input,label.f textarea{font:16px var(--font-texte);color:var(--encre);ba
 .fact span{font-size:14px;color:var(--gris);font-weight:600}
 @media (max-width:760px){.story-in{grid-template-columns:1fr;gap:24px;padding-block:40px}}
 footer{background:var(--nuit-2);color:#c9cef5;font-size:14px}
-footer .wrap{padding-block:28px calc(88px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
+footer .wrap{padding-block:28px calc(110px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
 footer a{color:#fff}
-.toast{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--encre);color:var(--fond);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px}
+.toast{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(100px + env(safe-area-inset-bottom,0px));background:var(--encre);color:var(--fond);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -259,7 +270,11 @@ footer a{color:#fff}
   </div>
 </footer>
 
-<button class="fab" id="fab" hidden><span>Ma sélection</span><span class="n" id="fabN">0</span></button>
+<button class="fab" id="fab" hidden aria-label="Voir ma sélection">
+  <span class="ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><b id="fabN">0</b></span>
+  <span class="lbl">Ma sélection<small id="fabTot"></small></span>
+  <span class="go">Réserver</span>
+</button>
 
 <dialog id="dlgBook"><div class="sheet" id="bookBody"></div></dialog>
 <dialog id="dlgSel"><div class="sheet" id="selBody"></div></dialog>
@@ -274,7 +289,9 @@ const CONFIG = {
   // Adresse de l'application Web Apps Script (la même que dans l'app de scan, se termine par /exec)
   catalogueUrl: "",
   // Compte Instagram pour les messages
-  instagram: "little.totem"
+  instagram: "little.totem",
+  // Livraison Mondial Relay estimée selon le nombre d'articles : [jusqu'à N articles, prix]. Au-delà : à confirmer par écrit.
+  livraison: [[1, 3.99], [2, 5.99], [6, 7.99]]
 };
 Object.assign(CONFIG, window.LITTLE_TOTEM_CONFIG || {});
 if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(CONFIG.catalogueUrl || "")) CONFIG.catalogueUrl = "";   // adresse absente ou pas encore collée
@@ -439,20 +456,30 @@ function ouvrir(isbn){
 function loadSel(){ try { return JSON.parse(localStorage.getItem("lt-selection")) || {}; } catch(_){ return {}; } }
 function saveSel(){ try { localStorage.setItem("lt-selection", JSON.stringify(selection)); } catch(_){} majFab(); }
 function items(){ return Object.entries(selection).map(([isbn, n]) => ({ l: livres.find(x => x.isbn === isbn), n })).filter(x => x.l && x.n > 0); }
-function majFab(){
-  const it = items(), n = it.reduce((s,x) => s + x.n, 0), tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
-  $("fab").hidden = !n; $("fabN").textContent = n + " · " + eur(tot);
+function fraisPort(n){                                       // null = à confirmer par écrit
+  const t = (CONFIG.livraison || []).find(([max]) => n <= max); return n > 0 && t ? t[1] : null;
+}
+function totaux(){
+  const it = items(), n = it.reduce((s,x) => s + x.n, 0), sous = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0), port = fraisPort(n);
+  return { it, n, sous, port, total: sous + (port || 0) };
+}
+function majFab(bump){
+  const { n, sous, port, total } = totaux();
+  $("fab").hidden = !n; $("fabN").textContent = n;
+  $("fabTot").textContent = `${n} article${n>1?"s":""} · ${eur(port != null ? total : sous)}${port != null ? " livré" : " + port"}`;
+  if(bump){ $("fab").classList.remove("bump"); void $("fab").offsetWidth; $("fab").classList.add("bump"); }
 }
 function basculer(isbn){
   const l = livres.find(x => x.isbn === isbn); if(!l || l.dispo <= 0) return;
   if(selection[isbn] > 0){ delete selection[isbn]; toast("Retiré de votre sélection"); }
   else { selection[isbn] = 1; toast("Ajouté à votre sélection"); }
-  saveSel(); afficher();
+  saveSel(); majFab(selection[isbn] > 0); afficher();
 }
 function texteSelection(){
-  const it = items(), tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
+  const { it, sous, port, total } = totaux();
   return `Bonjour Little Totem,\n\nJe souhaite réserver ces articles :\n` +
-    it.map(x => `- ${x.l.titre} × ${x.n} : ${eur((vente(x.l) || 0) * x.n)} [ISBN ${x.l.isbn}]`).join("\n") + `\n\nTotal : ${eur(tot)}\n`;
+    it.map(x => `- ${x.l.titre} × ${x.n} : ${eur((vente(x.l) || 0) * x.n)} [réf. ${x.l.isbn}]`).join("\n") +
+    `\n\nArticles : ${eur(sous)}\nLivraison Mondial Relay : ${port != null ? eur(port) : "à confirmer"}\nTotal : ${port != null ? eur(total) : eur(sous) + " + livraison"}\n`;
 }
 /* Formulaire commun : réservation (avec sélection) ou simple message. L'envoi passe par le script Google, qui transmet l'e-mail. */
 function formulaire(avecSelection){
@@ -462,7 +489,7 @@ function formulaire(avecSelection){
       <label class="f">E-mail *<input name="email" type="email" autocomplete="email" required maxlength="120"></label>
     </div>
     <label class="f">Téléphone (facultatif)<input name="tel" type="tel" autocomplete="tel" maxlength="40"></label>
-    <label class="f">${avecSelection ? "Un mot pour nous (ville, remise en main propre ou envoi…)" : "Votre message *"}<textarea name="message" rows="${avecSelection ? 2 : 5}" maxlength="3000" ${avecSelection ? "" : "required"}></textarea></label>
+    <label class="f">${avecSelection ? "Un mot pour nous (ville, point relais préféré…)" : "Votre message *"}<textarea name="message" rows="${avecSelection ? 2 : 5}" maxlength="3000" ${avecSelection ? "" : "required"}></textarea></label>
     <label class="hp" aria-hidden="true">Site web<input name="site_web" tabindex="-1" autocomplete="off"></label>
     <p class="msg" role="status"></p>
     <div class="actions">
@@ -472,9 +499,9 @@ function formulaire(avecSelection){
   </form>`;
 }
 function ouvrirSelection(){
-  const it = items(); if(!it.length) return;
-  const tot = it.reduce((s,x) => s + (vente(x.l) || 0) * x.n, 0);
+  const { it, n: nb, sous: tot, port, total } = totaux(); if(!it.length) return;
   const neuf = it.reduce((s,x) => s + (x.l.prix || vente(x.l) || 0) * x.n, 0);
+  const maxAuto = Math.max(0, ...(CONFIG.livraison || []).map(t => t[0]));
   const keep = $("selBody").querySelector("form") ? Object.fromEntries(new FormData($("selBody").querySelector("form"))) : null;
   $("selBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
     <h2 style="font-size:24px">Ma sélection</h2>
@@ -483,7 +510,12 @@ function ouvrirSelection(){
       <div class="t">${esc(l.titre)}<div style="font-weight:400;font-size:13px;color:var(--gris)">${remise(l) ? `<s>${eur(l.prix)}</s> ` : ""}${eur(vente(l))} · ${l.dispo} dispo</div></div>
       <div class="qty"><button data-qty="${l.isbn}" data-d="-1" aria-label="Un de moins">−</button><span>${n}</span>
         <button data-qty="${l.isbn}" data-d="1" aria-label="Un de plus" ${n >= l.dispo ? "disabled" : ""}>+</button></div></li>`).join("")}</ul>
-    <div class="total"><span>Total</span><span>${neuf > tot ? `<s style="font-size:14px;color:var(--gris);font-weight:600;margin-right:8px">${eur(neuf)}</s>` : ""}${eur(tot)}</span></div>
+    <div class="ship">
+      <span>Articles (${nb})</span><span>${neuf > tot ? `<s style="font-size:13px;color:var(--gris);margin-right:6px">${eur(neuf)}</s>` : ""}${eur(tot)}</span>
+      <span>Livraison en point relais Mondial Relay</span><span>${port != null ? eur(port) : "à confirmer"}</span>
+      <span class="muted">${port != null ? "Estimation selon le nombre d'articles, confirmée dans notre réponse." : `Au-delà de ${maxAuto} articles, on vous indique les frais de port par écrit.`}</span>
+    </div>
+    <div class="total"><span>${port != null ? "Total estimé" : "Total hors livraison"}</span><span>${eur(port != null ? total : tot)}</span></div>
     <h3 style="font-size:18px;margin-top:4px">Réserver ma sélection</h3>
     ${formulaire(true)}
     <p class="note">Rien n'est payé en ligne. On vous répond par e-mail pour confirmer la disponibilité et organiser la livraison.</p>`;
