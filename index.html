@@ -242,23 +242,23 @@ footer a{color:#fff}
   <div class="grid" id="grid" aria-busy="true"></div>
 </main>
 
-<!-- ============ MON HISTOIRE ============
-     Remplace les paragraphes ci-dessous par ton propre récit (garde les balises <p>…</p>).
-     Les chiffres à droite viennent de la campagne Ulule de 2022 : modifie-les ou supprime un bloc <div class="fact">…</div> si besoin. -->
+<!-- ============ NOTRE HISTOIRE ============
+     Pour modifier le texte, change les paragraphes <p>…</p> ci-dessous.
+     Le dernier chiffre (articles à prendre) se met à jour tout seul avec le stock. -->
 <section class="story" id="histoire" aria-labelledby="histoireTitre">
   <div class="wrap story-in">
     <div class="story-text">
-      <h2 id="histoireTitre">Mon histoire</h2>
+      <h2 id="histoireTitre">Notre histoire</h2>
       <svg class="squiggle" viewBox="0 0 140 14" aria-hidden="true"><path d="M2 8c12-8 22 8 34 0s22 8 34 0 22 8 34 0 22 8 34 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-      <p>Little Totem est née à Toulouse avec une idée simple : une box de livres culottée et créative pour les 0-10 ans. Des albums choisis avec soin, accompagnés d'audios, de podcasts, de cartes à collectionner et d'activités, pour lire autrement et en famille.</p>
-      <p>Chaque sélection garde le même cap : des histoires qui mettent K.O. les stéréotypes, qui font la part belle à l'art et qui parlent du monde qui change.</p>
-      <p>Aujourd'hui, ces livres cherchent une nouvelle famille. Choisissez ceux qui vous plaisent, ils n'attendent que de nouveaux lecteurs pour ouvrir d'autres mondes.</p>
+      <p>Little Totem, c'est la suite de Totem, une librairie multilingue née à Berlin en 2017. Comme de nombreux commerces, elle a dû se réinventer en 2020 : Totem est alors devenu Little Totem, et les livres sont devenus des box à découvrir dans sa boîte aux lettres.</p>
+      <p>Après quelques années, Little Totem ferme définitivement ses portes, et il est temps de liquider le stock restant.</p>
+      <p>Des centaines de références soigneusement sélectionnées sont à prendre à petits prix : l'occasion de (re)découvrir de belles histoires, de peaufiner sa bibliothèque et d'offrir à sa famille et à ses amis de vraies pépites.</p>
       <button class="primary" data-contact style="margin-top:6px">Nous écrire</button>
     </div>
     <div class="facts">
-      <div class="fact"><b style="color:var(--corail)">2022</b><span>lancement sur Ulule</span></div>
-      <div class="fact"><b style="color:var(--nuit-txt)">198</b><span>contributeurs dès le départ</span></div>
-      <div class="fact"><b style="color:var(--lagon-txt)">307 %</b><span>de l'objectif de la collecte</span></div>
+      <div class="fact"><b style="color:var(--corail)">2017</b><span>Totem ouvre à Berlin, librairie multilingue</span></div>
+      <div class="fact"><b style="color:var(--nuit-txt)">2020</b><span>Totem devient Little Totem, la box de livres</span></div>
+      <div class="fact" id="factStock" hidden><b style="color:var(--lagon-txt)" id="factStockN"></b><span>articles à prendre aujourd'hui</span></div>
     </div>
   </div>
 </section>
@@ -348,6 +348,8 @@ async function charger(){
     const j = await res.json(); if(!j.ok) throw new Error();
     livres = j.livres.map(l => ({...l, t: Date.parse(l.ajoute) || 0}));
     remplirFiltres(); afficher();
+    const dispo = livres.reduce((n, l) => n + Math.max(0, l.dispo), 0);
+    if(dispo){ $("factStockN").textContent = dispo; $("factStock").hidden = false; }
   } catch(e){
     etat("Le catalogue ne répond pas", "Réessayez dans un instant. Si le problème continue, écrivez-nous sur Instagram.");
   }
