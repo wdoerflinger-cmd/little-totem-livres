@@ -313,7 +313,8 @@ function prixHtml(l, big){
 const TYPE_PLURIEL = { Livre: "Livres", Jouet: "Jouets", Jeu: "Jeux", Autre: "Autres" };
 const typeOf = (l) => l.type || (/^97[89]/.test(l.isbn) ? "Livre" : "Jouet");
 const estLivre = (l) => typeOf(l) === "Livre";
-const LANG_CODE = { Anglais:"EN", Allemand:"DE", Espagnol:"ES", Italien:"IT", "Néerlandais":"NL", Portugais:"PT", Japonais:"JA", Chinois:"ZH", "Coréen":"KO", Russe:"RU", Arabe:"AR", Suédois:"SV", Danois:"DA", "Norvégien":"NO", Polonais:"PL", Breton:"BR", Catalan:"CA", Basque:"EU", Occitan:"OC" };
+const splitLangs = (v) => String(v || "").split(/\s*[,/&+]\s*|\s+et\s+/i).map(x => x.trim()).filter(Boolean);
+const LANG_CODE = { Français:"FR", Anglais:"EN", Allemand:"DE", Espagnol:"ES", Italien:"IT", "Néerlandais":"NL", Portugais:"PT", Japonais:"JA", Chinois:"ZH", "Coréen":"KO", Russe:"RU", Arabe:"AR", Suédois:"SV", Danois:"DA", "Norvégien":"NO", Polonais:"PL", Breton:"BR", Catalan:"CA", Basque:"EU", Occitan:"OC" };
 const langCode = (n) => LANG_CODE[n] || String(n || "").slice(0, 2).toUpperCase();
 let typeChoisi = "";
 const PALETTE = ["#24307f","#d81f86","#33c3c4","#f2644b","#7c8cf8","#8a52c9"];
@@ -362,7 +363,7 @@ function remplirFiltres(){
   $("editeur").hidden = list.length < 2;
   $("editeur").innerHTML = `<option value="">Éditeurs et marques</option>` + list.map(e => `<option>${esc(e)}</option>`).join("");
   // langues (le français d'abord)
-  const langs = {}; livres.forEach(l => { if(l.langue) langs[l.langue] = (langs[l.langue] || 0) + (l.dispo > 0 ? 1 : 0); });
+  const langs = {}; livres.forEach(l => splitLangs(l.langue).forEach(x => { langs[x] = (langs[x] || 0) + (l.dispo > 0 ? 1 : 0); }));
   const ll = Object.keys(langs).sort((a,b) => (b === "Français") - (a === "Français") || a.localeCompare(b, "fr"));
   $("langue").hidden = ll.length < 2;
   $("langue").innerHTML = `<option value="">Toutes les langues</option>` + ll.map(x => `<option value="${esc(x)}">${esc(x)} (${langs[x]})</option>`).join("");
@@ -393,7 +394,7 @@ function liste(){
   const q = $("q").value.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
   const ed = $("editeur").value, lg = $("langue").value, seulDispo = $("dispo").checked;
   let r = livres.filter(l => (!seulDispo || l.dispo > 0) && (!ed || (l.editeur || "").startsWith(ed)) &&
-    (!lg || l.langue === lg) && (!typeChoisi || typeOf(l) === typeChoisi) &&
+    (!lg || splitLangs(l.langue).includes(lg)) && (!typeChoisi || typeOf(l) === typeChoisi) &&
     (!q || [l.titre, l.auteurs, l.serie, l.editeur, l.isbn, l.langue, l.age, typeOf(l)].join(" ").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)));
   const s = $("sort").value;
   r.sort((a,b) => s === "titre" ? a.titre.localeCompare(b.titre, "fr")
@@ -413,7 +414,8 @@ function afficher(){
   grid.innerHTML = r.map(l => {
     const inSel = selection[l.isbn] > 0;
     return `<article class="book${l.dispo <= 0 ? " sold" : ""}">
-      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}${l.langue && l.langue !== "Français" ? `<span class="lang" title="${esc(l.langue)}" aria-label="En ${esc(l.langue.toLowerCase())}">${esc(langCode(l.langue))}</span>` : ""}</button>
+      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}${(() => { const ls = splitLangs(l.langue); return ls.some(x => x !== "Français")
+        ? `<span class="lang" title="${esc(ls.join(" et "))}" aria-label="${ls.length > 1 ? "Bilingue : " : "Langue : "}${esc(ls.join(" et "))}">${esc(ls.map(langCode).join("·"))}</span>` : ""; })()}</button>
       <h3>${esc(l.titre)}</h3>
       <div class="by">${esc([estLivre(l) ? (l.auteurs || l.editeur) : l.editeur, l.age].filter(Boolean).join(" · "))}</div>
       <div class="foot">${prixHtml(l)}
@@ -436,8 +438,8 @@ function ouvrir(isbn){
   const inSel = selection[l.isbn] > 0;
   const rows = (estLivre(l)
     ? [["Auteurs", l.auteurs], ["Série", [l.serie, l.tome && "tome " + l.tome].filter(Boolean).join(", ")], ["Éditeur", [l.editeur, l.annee].filter(Boolean).join(", ")],
-       ["Langue", l.langue], ["Âge", l.age], ["État", l.etat], ["ISBN", l.isbn]]
-    : [["Type", typeOf(l)], ["Marque", l.editeur], ["Âge", l.age], ["Langue", l.langue], ["État", l.etat], ["Code EAN", l.isbn]]).filter(r => r[1]);
+       [splitLangs(l.langue).length > 1 ? "Langues" : "Langue", splitLangs(l.langue).join(" et ")], ["Âge", l.age], ["État", l.etat], ["ISBN", l.isbn]]
+    : [["Type", typeOf(l)], ["Marque", l.editeur], ["Âge", l.age], [splitLangs(l.langue).length > 1 ? "Langues" : "Langue", splitLangs(l.langue).join(" et ")], ["État", l.etat], ["Code EAN", l.isbn]]).filter(r => r[1]);
   $("bookBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
     <div class="detail">
       <div>${coverHtml(l)}</div>
