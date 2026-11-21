@@ -125,8 +125,22 @@ main{padding-block:24px 120px}
 dialog{border:none;padding:0;border-radius:20px;background:var(--carte);color:var(--encre);width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 32px)}
 dialog::backdrop{background:rgba(16,20,60,.6)}
 .sheet{padding:20px;display:flex;flex-direction:column;gap:16px}
-.detail{display:grid;grid-template-columns:220px 1fr;gap:22px}
-@media (max-width:600px){.detail{grid-template-columns:1fr}.detail .cover{max-width:200px}}
+.detail{display:grid;grid-template-columns:260px 1fr;gap:22px}
+@media (max-width:600px){.detail{grid-template-columns:1fr}.slider{max-width:280px}}
+/* Slider de la fiche : couverture puis photos supplémentaires, défilement au doigt ou aux flèches */
+.slider{position:relative;min-width:0}
+.slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;border-radius:10px;scrollbar-width:none}
+.slides::-webkit-scrollbar{display:none}
+.slides>*{flex:0 0 100%;scroll-snap-align:center;max-width:100%}
+.slides .cover{box-shadow:none;border-radius:10px}
+.slider .nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:none;background:color-mix(in srgb,var(--carte) 88%,transparent);
+  color:var(--encre);font:700 20px/1 var(--font-titre);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px -6px rgba(0,0,0,.5)}
+.slider .prev{left:6px}.slider .next{right:6px}
+.slider .nav[disabled]{opacity:0;pointer-events:none}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.dots button{width:8px;height:8px;padding:0;border-radius:50%;border:none;background:var(--trait)}
+.dots button[aria-current="true"]{background:var(--corail);width:20px;border-radius:4px}
+.nphotos{position:absolute;bottom:8px;left:8px;font:700 11px var(--font-texte);border-radius:6px;padding:3px 7px;background:var(--carte);color:var(--encre);box-shadow:0 2px 6px -2px rgba(0,0,0,.35)}
 .detail h2{font-size:26px;line-height:1.15}
 .meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;margin:12px 0 0}
 .meta dt{color:var(--gris)}.meta dd{margin:0}
@@ -376,6 +390,34 @@ function remplirFiltres(){
 }
 
 /* ---------- Affichage ---------- */
+function sliderHtml(l){
+  const extras = (l.photos || []).filter(Boolean);
+  if(!extras.length) return `<div>${coverHtml(l)}</div>`;
+  const slides = [coverHtml(l), ...extras.map((u, i) => `<img class="cover" src="${esc(u)}" alt="Photo ${i + 2} de ${esc(l.titre)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`)];
+  return `<div class="slider" aria-roledescription="carrousel" aria-label="Photos de ${esc(l.titre)}">
+    <div class="slides" tabindex="0">${slides.join("")}</div>
+    <button type="button" class="nav prev" data-slide="-1" aria-label="Photo précédente" disabled>‹</button>
+    <button type="button" class="nav next" data-slide="1" aria-label="Photo suivante">›</button>
+    <div class="dots">${slides.map((_, i) => `<button type="button" data-dot="${i}" aria-label="Photo ${i + 1} sur ${slides.length}" aria-current="${i === 0}"></button>`).join("")}</div>
+  </div>`;
+}
+function majSlider(sl){
+  const box = sl.querySelector(".slides"), n = box.children.length, i = Math.round(box.scrollLeft / Math.max(1, box.clientWidth));
+  sl.querySelectorAll("[data-dot]").forEach((d, k) => d.setAttribute("aria-current", String(k === i)));
+  sl.querySelector(".prev").disabled = i <= 0; sl.querySelector(".next").disabled = i >= n - 1;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-slide],[data-dot]"); if(!b) return;
+  const sl = b.closest(".slider"), box = sl.querySelector(".slides"), w = box.clientWidth;
+  const cur = Math.round(box.scrollLeft / Math.max(1, w));
+  const to = b.dataset.dot != null ? +b.dataset.dot : cur + (+b.dataset.slide);
+  box.scrollTo({ left: Math.max(0, Math.min(box.children.length - 1, to)) * w });
+});
+document.addEventListener("scroll", (e) => { const sl = e.target.closest && e.target.closest(".slider"); if(sl) majSlider(sl); }, true);
+document.addEventListener("keydown", (e) => {
+  const box = document.activeElement && document.activeElement.closest && document.activeElement.closest(".slides"); if(!box) return;
+  if(e.key === "ArrowRight" || e.key === "ArrowLeft"){ e.preventDefault(); box.scrollBy({ left: (e.key === "ArrowRight" ? 1 : -1) * box.clientWidth }); }
+});
 function coverHtml(l, cls = "cover"){
   const i = livres.indexOf(l); const bg = PALETTE[(i < 0 ? 0 : i) % PALETTE.length];
   const ph = `<div class="${cls} ph" style="background:${bg}">${esc(l.titre)}</div>`;
@@ -414,7 +456,7 @@ function afficher(){
   grid.innerHTML = r.map(l => {
     const inSel = selection[l.isbn] > 0;
     return `<article class="book${l.dispo <= 0 ? " sold" : ""}">
-      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}${(() => { const ls = splitLangs(l.langue); return ls.some(x => x !== "Français")
+      <button class="cover-btn" data-open="${l.isbn}" aria-label="Voir ${esc(l.titre)}">${coverHtml(l)}${badge(l)}${remise(l) ? `<span class="promo" aria-label="Remise de ${remise(l)} %">−${remise(l)}%</span>` : ""}${(l.photos || []).length ? `<span class="nphotos" aria-label="${(l.photos || []).length + 1} photos">${(l.photos || []).length + 1} photos</span>` : ""}${(() => { const ls = splitLangs(l.langue); return ls.some(x => x !== "Français")
         ? `<span class="lang" title="${esc(ls.join(" et "))}" aria-label="${ls.length > 1 ? "Bilingue : " : "Langue : "}${esc(ls.join(" et "))}">${esc(ls.map(langCode).join("·"))}</span>` : ""; })()}</button>
       <h3>${esc(l.titre)}</h3>
       <div class="by">${esc([estLivre(l) ? (l.auteurs || l.editeur) : l.editeur, l.age].filter(Boolean).join(" · "))}</div>
@@ -442,7 +484,7 @@ function ouvrir(isbn){
     : [["Type", typeOf(l)], ["Marque", l.editeur], ["Âge", l.age], [splitLangs(l.langue).length > 1 ? "Langues" : "Langue", splitLangs(l.langue).join(" et ")], ["État", l.etat], ["Code EAN", l.isbn]]).filter(r => r[1]);
   $("bookBody").innerHTML = `<button class="close" data-close aria-label="Fermer">×</button>
     <div class="detail">
-      <div>${coverHtml(l)}</div>
+      ${sliderHtml(l)}
       <div>
         <h2>${esc(l.titre)}</h2>
         <dl class="meta">${rows.map(([k,v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
